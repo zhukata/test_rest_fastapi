@@ -5,6 +5,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 
+
 load_dotenv()
 
 
@@ -18,3 +19,12 @@ async def get_session():
 
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
+
+
+# async def create_tables():
+#    async with engine.begin() as conn:
+#        await conn.run_sync(Model.metadata.create_all)
+
+# async def delete_tables():
+#    async with engine.begin() as conn:
+#        await conn.run_sync(Model.metadata.drop_all)
