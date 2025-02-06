@@ -1,15 +1,14 @@
-from fastapi import HTTPException
 from sqlalchemy import select
-from auth import hash_password
+from auth import hash_password, verify_password
 from db import SessionDep
 from models import UserORM
-from schemas import UserResponse, UserCreate
+from schemas import UserLogin, UserResponse, UserCreate
 
 
 async def create_user(db: SessionDep, user: UserCreate):
     existing_user = await get_user_by_email(db, user.email)
     if existing_user:
-        raise HTTPException(status_code=400, detail="User уже зарегистрирован")
+        return None
 
     new_user = UserORM(
         email=user.email, full_name=user.full_name, password=hash_password(user.password)
@@ -20,6 +19,12 @@ async def create_user(db: SessionDep, user: UserCreate):
     return new_user
 
 
+async def authenticate_user(db: SessionDep, user: UserLogin):
+    check_user = await get_user_by_email(db, user.email)
+    if not check_user or verify_password(user.password, check_user.password) is False:
+        return None
+    return check_user
+
 async def get_users(db: SessionDep, user: UserResponse) -> list[UserResponse]:
     query = select(UserORM)
     result = await db.execute(query)
@@ -28,11 +33,12 @@ async def get_users(db: SessionDep, user: UserResponse) -> list[UserResponse]:
     return users
 
 
-async def get_user_by_email(db: SessionDep, email: str):
+async def get_user_by_email(db: SessionDep, email: str) -> UserORM:
     result = await db.execute(select(UserORM).where(UserORM.email == email))
     return result.scalars().first()
 
 
-async def get_user_by_id(db: SessionDep, user_id: int):
+async def get_user_by_id(db: SessionDep, user: UserResponse, user_id: int) -> UserResponse:
     result = await db.execute(select(UserORM).where(UserORM.id == user_id))
-    return result.scalars().first()
+    found_user = user.model_validate(result.scalars().first())
+    return found_user
