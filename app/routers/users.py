@@ -3,7 +3,7 @@ from fastapi import HTTPException, Request, Response, APIRouter
 
 from db import SessionDep
 from schemas import UserCreate, UserLogin, UserResponse
-from repository import authenticate_user, create_user, get_user_by_id, get_users
+from repository import authenticate_user, check_admin, create_user, get_user_by_id, get_users
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -11,12 +11,19 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get("/", response_model=List[UserResponse])
 async def get_user_list(db: SessionDep, request: Request):
+    user_id = request.cookies.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Не авторизован")
+    
+    if not check_admin(db, user_id):
+        raise HTTPException(status_code=403, detail="Недостаточно прав")
+
     users = await get_users(db, UserResponse)
     return users
 
 
 @router.post("/register")
-async def register(db: SessionDep, user: UserCreate, ):
+async def register(db: SessionDep, user: UserCreate):
     new_user = await create_user(db, user)
     if not new_user:
         raise HTTPException(status_code=400, detail="User уже зарегистрирован")

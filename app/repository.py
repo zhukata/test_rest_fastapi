@@ -42,3 +42,16 @@ async def get_user_by_id(db: SessionDep, user: UserResponse, user_id: int) -> Us
     result = await db.execute(select(UserORM).where(UserORM.id == user_id))
     found_user = user.model_validate(result.scalars().first())
     return found_user
+
+
+async def make_admin(db: SessionDep, user_id: int):
+    admin = await db.get(UserORM, user_id)
+    admin.is_admin = True
+    await db.commit()
+    return admin
+
+
+async def check_admin(db: SessionDep, user_id: int) -> bool:
+    user = await db.get(UserORM, user_id)
+    if user.is_admin:
+        return True

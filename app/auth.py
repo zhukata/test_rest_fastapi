@@ -1,3 +1,4 @@
+import os
 from passlib.context import CryptContext
 
 
@@ -8,3 +9,8 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
+
+async def check_admin_key(admin_key: str) -> bool:
+    if os.getenv('ADMIN_KEY' == admin_key):
+        return True

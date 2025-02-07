@@ -5,6 +5,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     full_name: str
     password: str
+    is_admin: bool
 
 class UserResponse(BaseModel):
     id: int
@@ -17,3 +18,7 @@ class UserResponse(BaseModel):
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+# class AccountResponse(BaseModel):
+#     id:
