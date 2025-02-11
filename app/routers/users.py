@@ -1,9 +1,8 @@
-from typing import List
 from fastapi import HTTPException, Request, Response, APIRouter
 
 from db import SessionDep
 from schemas import UserCreate, UserLogin, UserResponse
-from repository import authenticate_user, check_admin, create_user, get_user_by_id, get_users
+from repository import UserRepo, check_admin
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -12,7 +11,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 @router.post("/login")
 async def login(db: SessionDep, user: UserLogin, response: Response):
     """Авторизация через email/password"""
-    check_user = await authenticate_user(db,user)
+    check_user = await UserRepo.authenticate_user(db, user)
     if check_user is None:
         raise HTTPException(status_code=401,
                             detail='Неверная почта или пароль')
@@ -29,9 +28,8 @@ async def get_user(request: Request, db: SessionDep):
     if not user_id:
         raise HTTPException(status_code=401, detail="Не авторизован")
 
-    db_user = await get_user_by_id(db, UserResponse, int(user_id))
+    db_user = await UserRepo.get_user_by_id(db, int(user_id))
     if not db_user:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
 
-    return db_user
-
+    return UserResponse.model_validate(db_user)

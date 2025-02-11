@@ -4,7 +4,8 @@ from fastapi import FastAPI
 
 from db import engine, initialize_database
 from models import Base
-from routers.users import router
+from routers.users import router as users_router
+from routers.admins import router as admins_router
 
 
 @asynccontextmanager
@@ -17,7 +18,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(router)
+app.include_router(users_router)
+app.include_router(admins_router)
 
 
 if __name__ == "__main__":
