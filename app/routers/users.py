@@ -1,8 +1,8 @@
 from fastapi import HTTPException, Request, Response, APIRouter
 
-from db import SessionDep
+from dependencies import SessionDep
 from schemas import UserCreate, UserLogin, UserResponse
-from repository import UserRepo, check_admin
+from repository import UserRepo
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -16,7 +16,7 @@ async def login(db: SessionDep, user: UserLogin, response: Response):
         raise HTTPException(status_code=401,
                             detail='Неверная почта или пароль')
 
-    response.set_cookie(key="user_id", value=str(check_user.id), expires=120, httponly=True)
+    response.set_cookie(key="user_id_from_cookie", value=str(check_user.id), expires=300, httponly=True)
     return {"message": "Успешный вход"}
 
 
@@ -24,7 +24,7 @@ async def login(db: SessionDep, user: UserLogin, response: Response):
 
 @router.get("/me", response_model=UserResponse)
 async def get_user(request: Request, db: SessionDep):
-    user_id = request.cookies.get("user_id")
+    user_id = request.cookies.get("user_id_from_cookie")
     if not user_id:
         raise HTTPException(status_code=401, detail="Не авторизован")
 

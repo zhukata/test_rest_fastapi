@@ -2,7 +2,8 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
-from db import engine, initialize_database
+from init_db import initialize_database
+from db import engine
 from models import Base
 from routers.users import router as users_router
 from routers.admins import router as admins_router

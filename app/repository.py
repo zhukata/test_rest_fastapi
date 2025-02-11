@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from auth import hash_password, verify_password
-from db import SessionDep
+from dependencies import SessionDep
 from models import UserORM
 from schemas import UserLogin, UserResponse, UserCreate, UserUpdate
 
@@ -69,32 +69,11 @@ class UserRepo:
         return users
     
 
-async def make_admin(db: SessionDep, user_id: int):
-    admin = await db.get(UserORM, int(user_id))
-    admin.is_admin = True
-    await db.commit()
-    return admin
-
-
-async def check_admin(db: SessionDep, user_id: int) -> bool:
-    user = await db.get(UserORM, int(user_id))
-    if not user or not user.is_admin:
-        return False
-    return True
-
-#     @staticmethod
-#     async def update_user(db: SessionDep, user_id: int, email: str = None, full_name: str = None, is_admin: int = None):
-#         user = await UserRepo.get_user_by_id(session, user_id)
-#         if not user:
-#             raise HTTPException(status_code=404, detail="User not found")
-#         if email:
-#             user.email = email
-#         if full_name:
-#             user.full_name = full_name
-#         if is_admin is not None:
-#             user.is_admin = is_admin
-#         await session.commit()
-#         return user
+# async def make_admin(db: SessionDep, user_id: int):
+#     admin = await db.get(UserORM, int(user_id))
+#     admin.is_admin = True
+#     await db.commit()
+#     return admin
 
 
 
