@@ -6,6 +6,7 @@ class UserCreate(BaseModel):
     full_name: str
     password: str
 
+
 class UserResponse(BaseModel):
     id: int
     email: str
@@ -14,9 +15,11 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
 
 class UserUpdate(BaseModel):
     email: EmailStr
@@ -26,7 +29,7 @@ class UserUpdate(BaseModel):
 class AccountResponse(BaseModel):
     id: int
     balance: float
-    
+
     class Config:
         from_attributes = True
 
@@ -35,7 +38,7 @@ class PaymentResponse(BaseModel):
     id: int
     account_id: int
     amount: int
-    
+
     class Config:
         from_attributes = True
 

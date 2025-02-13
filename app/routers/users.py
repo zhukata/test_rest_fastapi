@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import Depends, HTTPException, Request, Response, APIRouter
+from fastapi import Depends, HTTPException, Response, APIRouter
 
 from dependencies import SessionDep, check_user_permission
 from schemas import AccountResponse, PaymentResponse, UserLogin, UserResponse
@@ -17,46 +17,78 @@ async def login(db: SessionDep, user: UserLogin, response: Response):
         raise HTTPException(status_code=401,
                             detail='Неверная почта или пароль')
 
-    response.set_cookie(key="user_id_from_cookie", value=str(check_user.id), expires=300, httponly=True)
+    response.set_cookie(
+        key="user_id_from_cookie",
+        value=str(check_user.id),
+        max_age=300,
+        httponly=True
+    )
     return {"message": "Успешный вход"}
 
 
-@router.get("/{user_id_from_url}", response_model=UserResponse)
+@router.get("/{user_id}", response_model=UserResponse)
 async def get_user(
     db: SessionDep,
-    user_id_from_url: int,
+    user_id: int,
     is_permission: bool = Depends(check_user_permission)
 ):
-    db_user = await UserRepo.get_user_by_id(db, user_id_from_url)
+    """Получение данных пользователя"""
+    db_user = await UserRepo.get_user_by_id(db, user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
 
     return UserResponse.model_validate(db_user)
 
 
-@router.get("/{user_id_from_url}/accounts", response_model=List[AccountResponse])
+@router.get("/{user_id}/accounts", response_model=List[AccountResponse])
 async def get_accounts(
     db: SessionDep,
-    user_id_from_url: int,
+    user_id: int,
     is_permission: bool = Depends(check_user_permission)
 ):
-    return await AccountRepo.get_accounts(db, user_id_from_url, AccountResponse)
+    """Получение списка счетов пользователя"""
+    accounts = await AccountRepo.get_accounts(
+        db,
+        user_id,
+        AccountResponse
+    )
+    if not accounts:
+        raise HTTPException(status_code=404, detail="Счета не найдены")
+    return accounts
 
 
-@router.post("/{user_id_from_url}/accounts/new")
+@router.post("/{user_id}/accounts/new", response_model=AccountResponse)
 async def create_account(
     db: SessionDep,
-    user_id_from_url: int,
+    user_id: int,
     is_permission: bool = Depends(check_user_permission)
 ):
-    new_account = await AccountRepo.create_account(db, user_id_from_url, AccountResponse)
-    return {"message": "Счет успешно создан", 'account': new_account}
+    """Создание нового счета пользователя"""
+    new_account = await AccountRepo.create_account(
+        db,
+        user_id,
+        AccountResponse
+    )
+    if not new_account:
+        raise HTTPException(
+            status_code=400,
+            detail="Ошибка при создании счета"
+        )
+    return new_account
 
 
-@router.get("/{user_id_from_url}/payments", response_model=List[PaymentResponse])
+@router.get("/{user_id}/payments", response_model=List[PaymentResponse])
 async def get_payments(
     db: SessionDep,
-    user_id_from_url: int,
+    user_id: int,
     is_permission: bool = Depends(check_user_permission)
 ):
-    return await PaymentRepo.get_payments(db, user_id_from_url, PaymentResponse)
+    """Получение списка платежей пользователя"""
+    payments = await PaymentRepo.get_payments(
+        db,
+        user_id,
+        PaymentResponse
+    )
+    if not payments:
+        raise HTTPException(status_code=404, detail="Платежи не найдены")
+    return payments
