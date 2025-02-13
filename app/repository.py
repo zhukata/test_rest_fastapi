@@ -77,6 +77,13 @@ class AccountRepo:
         account_models = result.scalars().all()
         accounts = [AccountSchema.model_validate(account_model) for account_model in account_models]
         return accounts
+    
+    @staticmethod
+    async def create_account(db: SessionDep, user_id: int, AccountSchema: AccountResponse) -> AccountResponse:
+        new_account = AccountORM(user_id=user_id, balance=0)
+        db.add(new_account)
+        await db.commit()
+        return AccountSchema.model_validate(new_account)
 
 
 class PaymentRepo:

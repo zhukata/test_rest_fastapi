@@ -34,15 +34,15 @@ class AccountResponse(BaseModel):
 class PaymentResponse(BaseModel):
     id: int
     account_id: int
-    amount: float
+    amount: int
     
     class Config:
         from_attributes = True
 
 
 class PaymentWebhook(BaseModel):
-    transaction_id: str
     account_id: int
+    amount: int
+    transaction_id: str
     user_id: int
-    amount: float
     signature: str

@@ -12,7 +12,8 @@ router = APIRouter(prefix="/payments", tags=["payments"])
 @router.post("/webhook")
 async def process_webhook(payment: PaymentWebhook, db: SessionDep):
     computed_signature = generate_signature(payment.account_id, payment.amount, payment.transaction_id, payment.user_id)
-    print(f"COMPUTED{computed_signature}, web {payment.signature}")
+    print(payment)
+    print(f"COMPUTED:{computed_signature}, web:{payment.signature}")
     if computed_signature != payment.signature:
         raise HTTPException(status_code=400, detail="Неверная подпись")
 

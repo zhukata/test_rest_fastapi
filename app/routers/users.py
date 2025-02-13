@@ -43,6 +43,16 @@ async def get_accounts(
     return await AccountRepo.get_accounts(db, user_id_from_url, AccountResponse)
 
 
+@router.post("/{user_id_from_url}/accounts/new")
+async def create_account(
+    db: SessionDep,
+    user_id_from_url: int,
+    is_permission: bool = Depends(check_user_permission)
+):
+    new_account = await AccountRepo.create_account(db, user_id_from_url, AccountResponse)
+    return {"message": "Счет успешно создан", 'account': new_account}
+
+
 @router.get("/{user_id_from_url}/payments", response_model=List[PaymentResponse])
 async def get_payments(
     db: SessionDep,

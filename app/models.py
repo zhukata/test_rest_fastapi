@@ -1,5 +1,5 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Float, ForeignKey, Integer, String, text
+from sqlalchemy import ForeignKey, Integer, String, text
 
 class Base(DeclarativeBase):
     pass
@@ -19,7 +19,7 @@ class AccountORM(Base):
     
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    balance: Mapped[float] = mapped_column(Float, server_default=text('0'))
+    balance: Mapped[float] = mapped_column(Integer, server_default=text('0'))
 
 
 class PaymentORM(Base):
@@ -29,4 +29,4 @@ class PaymentORM(Base):
     transaction_id: Mapped[int] = mapped_column(String, unique=True, nullable=False)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     account_id: Mapped[int]= mapped_column(Integer, ForeignKey("accounts.id"), nullable=False)
-    amount: Mapped[float]= mapped_column(Float, nullable=False)
+    amount: Mapped[float]= mapped_column(Integer, nullable=False)
