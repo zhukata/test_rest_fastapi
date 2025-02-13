@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import Depends, HTTPException, Path, Request, Response, APIRouter
+from fastapi import Depends, HTTPException, APIRouter
 
 from dependencies import SessionDep, admin_required
 from repository import UserRepo
@@ -62,50 +62,3 @@ async def user_delete(
     if not delete_user:
         raise HTTPException(status_code=400, detail="Не получилось удалить пользователя")
     return {"message": 'Пользователь успешно удален'}
-
-
-# from typing import List, Annotated
-# from fastapi import Depends, HTTPException, Path, APIRouter
-
-# from dependencies import SessionDep, admin_required
-# from repository import UserRepo
-# from schemas import UserCreate, UserResponse, UserUpdate
-
-
-# router = APIRouter(prefix="/admins", tags=["Admin"])
-
-
-# @router.get("/users/", response_model=List[UserResponse])
-# async def get_user_list(
-#     db: SessionDep, 
-#     is_admin: bool = Depends(admin_required)
-# ):
-#     """Получение списка пользователей"""
-#     return await UserRepo.get_all_users(db, UserResponse)
-
-
-# @router.patch("/users/update/{user_id}", response_model=UserResponse)
-# async def user_update(
-#     user_id: Annotated[int, Path(..., title="ID пользователя")],  # ✅ Исправленный Path
-#     user: UserUpdate,
-#     db: SessionDep,  
-#     is_admin: bool = Depends(admin_required)
-# ):
-#     """Обновление пользователя"""
-#     updated_user = await UserRepo.update_user(db, user, user_id)
-#     if not updated_user:
-#         raise HTTPException(status_code=400, detail="Не получилось обновить пользователя")
-#     return UserResponse.model_validate(updated_user)
-
-
-# @router.delete("/users/delete/{user_id}")
-# async def user_delete(
-#     user_id: Annotated[int, Path(..., title="ID пользователя")],  # ✅ Исправленный Path
-#     db: SessionDep,  
-#     is_admin: bool = Depends(admin_required)
-# ):
-#     """Удаление пользователя"""
-#     deleted = await UserRepo.delete_user(db, user_id)
-#     if not deleted:
-#         raise HTTPException(status_code=400, detail="Не получилось удалить пользователя")
-#     return {"message": "Пользователь успешно удален"}

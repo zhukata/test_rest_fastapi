@@ -24,9 +24,9 @@ class AccountORM(Base):
 
 class PaymentORM(Base):
     __tablename__ = "payments"
+    
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     transaction_id: Mapped[int] = mapped_column(String, unique=True, nullable=False)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     account_id: Mapped[int]= mapped_column(Integer, ForeignKey("accounts.id"), nullable=False)
     amount: Mapped[float]= mapped_column(Float, nullable=False)
-

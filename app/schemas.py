@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
@@ -26,9 +26,23 @@ class UserUpdate(BaseModel):
 class AccountResponse(BaseModel):
     id: int
     balance: float
+    
+    class Config:
+        from_attributes = True
 
 
 class PaymentResponse(BaseModel):
     id: int
     account_id: int
     amount: float
+    
+    class Config:
+        from_attributes = True
+
+
+class PaymentWebhook(BaseModel):
+    transaction_id: str
+    account_id: int
+    user_id: int
+    amount: float
+    signature: str

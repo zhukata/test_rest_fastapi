@@ -7,6 +7,7 @@ from db import engine
 from models import Base
 from routers.users import router as users_router
 from routers.admins import router as admins_router
+from routers.payments import router as payments_router
 
 
 @asynccontextmanager
@@ -21,6 +22,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(users_router)
 app.include_router(admins_router)
+app.include_router(payments_router)
 
 
 if __name__ == "__main__":
