@@ -1,8 +1,8 @@
 from sqlalchemy import select
 
-from db import new_session
-from auth import hash_password
-from models import UserORM, AccountORM
+from app.db import new_session
+from app.auth import hash_password
+from app.models import UserORM, AccountORM
 
 
 async def initialize_database():

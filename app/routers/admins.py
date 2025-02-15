@@ -1,12 +1,12 @@
 from typing import List
 from fastapi import Depends, HTTPException, APIRouter
 
-from dependencies import SessionDep, admin_required
-from repository import AccountRepo, UserRepo
-from schemas import AccountResponse, UserCreate, UserResponse, UserUpdate
+from app.dependencies import SessionDep, admin_required
+from app.repository import AccountRepo, UserRepo
+from app.schemas import AccountResponse, UserCreate, UserResponse, UserUpdate
 
 
-router = APIRouter(prefix="/admins", tags=["Admin"])
+router = APIRouter(prefix="/admin", tags=["Admin"])
 
 
 @router.get("/users/", response_model=List[UserResponse])

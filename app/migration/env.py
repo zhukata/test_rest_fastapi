@@ -10,10 +10,10 @@ from os.path import dirname, abspath
 
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
-from db import DATABASE_URL
-from models import Base
+from app.db import DATABASE_URL
+from app.models import Base
 
-from models import UserORM, AccountORM, PaymentORM
+from app.models import UserORM, AccountORM, PaymentORM
 
 
 # this is the Alembic Config object, which provides

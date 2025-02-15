@@ -2,18 +2,19 @@ from contextlib import asynccontextmanager
 import uvicorn
 from fastapi import FastAPI
 
-from init_db import initialize_database
-from db import engine
-from models import Base
-from routers.users import router as users_router
-from routers.admins import router as admins_router
-from routers.payments import router as payments_router
+from app.init_db import initialize_database
+from app.db import engine
+from app.models import Base
+from app.routers.users import router as users_router
+from app.routers.admins import router as admins_router
+from app.routers.payments import router as payments_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        # await conn.run_sync(Base.metadata.create_all)
+        # await conn.commit()
         await initialize_database()
     yield
 
@@ -26,4 +27,5 @@ app.include_router(payments_router)
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+

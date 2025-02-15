@@ -1,10 +1,10 @@
 from sqlalchemy import select
 
-from auth import hash_password, verify_password
-from dependencies import SessionDep
-from models import AccountORM, PaymentORM, UserORM
-from schemas import AccountResponse, PaymentResponse
-from schemas import UserLogin, UserResponse, UserCreate, UserUpdate
+from app.auth import hash_password, verify_password
+from app.dependencies import SessionDep
+from app.models import AccountORM, PaymentORM, UserORM
+from app.schemas import AccountResponse, PaymentResponse
+from app.schemas import UserLogin, UserResponse, UserCreate, UserUpdate
 
 
 class UserRepo:

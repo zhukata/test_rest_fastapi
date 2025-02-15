@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
-from schemas import PaymentWebhook
-from auth import generate_signature
-from dependencies import SessionDep
-from models import AccountORM, PaymentORM
+from app.schemas import PaymentWebhook
+from app.auth import generate_signature
+from app.dependencies import SessionDep
+from app.models import AccountORM, PaymentORM
 
 
-router = APIRouter(prefix="/payments", tags=["payments"])
+router = APIRouter(prefix="/payments", tags=["Payments"])
 
 
 @router.post("/webhook")

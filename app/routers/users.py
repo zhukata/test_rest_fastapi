@@ -1,9 +1,9 @@
 from typing import List
 from fastapi import Depends, HTTPException, Response, APIRouter
 
-from dependencies import SessionDep, check_user_permission
-from schemas import AccountResponse, PaymentResponse, UserLogin, UserResponse
-from repository import AccountRepo, PaymentRepo, UserRepo
+from app.dependencies import SessionDep, check_user_permission
+from app.schemas import AccountResponse, PaymentResponse, UserLogin, UserResponse
+from app.repository import AccountRepo, PaymentRepo, UserRepo
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
