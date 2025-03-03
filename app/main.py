@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from app.init_db import initialize_database
-from app.db import engine
+from app.db import engine, new_session
 from app.models import Base
 from app.routers.users import router as users_router
 from app.routers.admins import router as admins_router
@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         # await conn.run_sync(Base.metadata.create_all)
         # await conn.commit()
-        await initialize_database()
+        await initialize_database(new_session)
     yield
 
 

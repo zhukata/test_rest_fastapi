@@ -1,11 +1,10 @@
 from sqlalchemy import select
 
-from app.db import new_session
 from app.auth import hash_password
 from app.models import UserORM, AccountORM
 
 
-async def initialize_database():
+async def initialize_database(new_session):
     """Создание тестовых сущностей"""
     async with new_session() as session:
         existing_user = await session.execute(

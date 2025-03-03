@@ -31,12 +31,18 @@ class UserRepo:
         user: UserUpdate,
         user_id: int
     ) -> UserORM | None:
+        user_data = user.model_dump(exclude_unset=True)
+
+        if not user_data:
+            return None  
+
         existed_user = await UserRepo.get_user_by_id(db, user_id)
         if not existed_user:
             return None
 
-        existed_user.email = user.email
-        existed_user.full_name = user.full_name
+        for key, value in user_data.items():
+            setattr(existed_user, key, value)
+
         await db.commit()
         await db.refresh(existed_user)
         return existed_user

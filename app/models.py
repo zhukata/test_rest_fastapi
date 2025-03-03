@@ -1,9 +1,7 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, String, text
 
-
-class Base(DeclarativeBase):
-    pass
+from app.db import Base
 
 
 class UserORM(Base):
@@ -18,6 +16,9 @@ class UserORM(Base):
         server_default=text('false'),
         nullable=False
     )
+    
+    accounts = relationship("AccountORM", back_populates="user", cascade="all, delete-orphan")
+
 
 
 class AccountORM(Base):
@@ -30,6 +31,7 @@ class AccountORM(Base):
     )
     balance: Mapped[float] = mapped_column(Integer, server_default=text('0'))
 
+    user = relationship("UserORM", back_populates="accounts")
 
 class PaymentORM(Base):
     __tablename__ = "payments"
