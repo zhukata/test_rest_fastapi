@@ -25,7 +25,7 @@ test_rest_fastapi — это RESTful API для управления польз�
    ```
 3. Создайте файл .env и укажите в нем переменные окружения
 ```
-DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/db_name
+DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/db_name
 SECRET_KEY = 'your secret key'
 POSTGRES_USER = user
 POSTGRES_PASSWORD = password
@@ -39,21 +39,26 @@ docker-compose up --build
 
 ### 2.Запуск без Docker (локально)
 1. Убедитесь что у вас установленны Python 3.12+ и PostgreSQL.
-2. Установите зависимости:
+2. Клонируйте репозиторий:  
+   ```
+   git clone https://github.com/zhukata/test_rest_fastapi
+   cd test_rest_fastapi
+   ```
+3. Установите зависимости:
 ```
 pip install -r requirements.txt
 ```
-3. Укажите переменные окружения в .env (см. выше).
-4. Выполните миграции базы данных:
+4. Укажите переменные окружения в .env (см. выше).
+5. Выполните миграции базы данных:
 ```
 alembic upgrade head
 
 ```
-5. Запустите сервер FastAPI:
+6. Запустите сервер FastAPI:
 ```
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-6. API доступно по адресу: http://localhost:8000
+7. API доступно по адресу: http://localhost:8000
 
 ### 3. Данные пользователей по умолчанию:
 1. admin
