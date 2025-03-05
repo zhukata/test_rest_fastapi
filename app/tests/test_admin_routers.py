@@ -3,7 +3,7 @@ import pytest
 from pydantic import ValidationError
 from httpx import AsyncClient
 from app.repository import UserRepo
-from app.schemas import UserResponse
+from app.schemas import AccountResponse, UserResponse
 
 
 @pytest.mark.asyncio
@@ -65,15 +65,21 @@ class TestUserCRUD:
 
         data = response.json()
         assert isinstance(data, list)
+        for account in data:
+            try:
+                AccountResponse.model_validate(account)
+            except ValidationError as e:
+                pytest.fail(f"Ошибка валидации данных: {e}")
 
     async def test_update_user(self):
         """Тест обновления пользователя"""
+        user_id = 3
         update_data = {
-            "full_name": "Updated Name"
+            "full_name": "Updated Name",
         }
 
         response = await self.client.patch(
-            "admin/users/1",
+            f"admin/users/{user_id}",
             json=update_data,
             cookies={'user_id_from_cookie': '2'}
         )
@@ -85,11 +91,12 @@ class TestUserCRUD:
 
     async def test_delete_user(self):
         """Тест удаления пользователя"""
+        user_id = 3
         response = await self.client.delete(
-            "admin/users/1",
+            f"admin/users/{user_id}",
             cookies={'user_id_from_cookie': '2'}
         )
         assert response.status_code == 200
         assert response.json() == {"message": "Пользователь успешно удален"}
-        user = await UserRepo.get_user_by_id(self.db, 1)
+        user = await UserRepo.get_user_by_id(self.db, user_id)
         assert user is None
